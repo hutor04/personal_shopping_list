@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import withDataFetching from '../withDataFetching';
+import { Link, useHistory } from 'react-router-dom';
 import SubHeader from '../components/Header/SubHeader';
 
 const ListWrapper = styled.div`
@@ -33,21 +32,39 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const Lists = ({ data, loading, error, history }) =>
-  !loading && !error ? (
-    <>
-      {history && <SubHeader title='Your Lists' />}
-      <ListWrapper>
-        {data &&
-        data.map(list => (
-          <ListLink key={list.id} to={`list/${list.id}`}>
-            <Title>{list.title}</Title>
-          </ListLink>
-        ))}
-      </ListWrapper>
-    </>
-  ) : (
-    <Alert>{loading ? 'Loading...' : error}</Alert>
-  );
+const Lists = ({ lists, loading, error, getListsRequest }) => {
+  let history = useHistory();
 
-export default withDataFetching(Lists);
+  useEffect(() => {
+    if (!lists.length) {
+      getListsRequest();
+    }
+  }, [lists, getListsRequest]);
+
+  let content;
+    if (!loading && !error) {
+      content = (
+        <>
+          {history && <SubHeader title='Your Lists' />}
+          <ListWrapper>
+            {lists &&
+            lists.map(list => (
+              <ListLink key={list.id} to={`list/${list.id}`}>
+                <Title>{list.title}</Title>
+              </ListLink>
+            ))}
+          </ListWrapper>
+        </>
+      );
+    }
+    if (loading) {
+      content = <Alert>Loading...</Alert>
+    }
+    if (error) {
+      content = <Alert>{error}</Alert>
+    }
+  return content;
+};
+
+
+export default Lists;

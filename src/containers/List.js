@@ -1,7 +1,6 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import withDataFetching from '../withDataFetching';
 import SubHeader from '../components/Header/SubHeader';
 import ListItem from '../components/ListItem/ListItem';
 
@@ -17,21 +16,37 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const List = ({ data, loading, error, match, history }) => {
+const List = ({ list, items, loading, error, getItemsRequest, getListRequest }) => {
   let { id } = useParams();
-  let items;
-  if (data.length > 0) {
-    items = data.filter(item => item.listId === parseInt(id));
+  let history = useHistory();
+  let location = useLocation();
+
+  useEffect(() => {
+    if (!list) {
+      getListRequest(id);
+    }
+
+    if (!items.length > 0) {
+      getItemsRequest(id);
+    };
+    }, [items, list, id, getItemsRequest, getListRequest]);
+
+
+
+  let subHeader;
+  if (list) {
+    subHeader = (
+      <SubHeader
+        goBack={() => history.goBack()}
+        title={list.title}
+        openForm={() => history.push(`${location.pathname}/new`)}
+      />
+    );
   }
 
   return !loading && !error ? (
     <>
-      {history && (
-        <SubHeader
-          goBack={() => history.goBack()}
-          openForm={() => history.push(`${match.url}/new`)}
-        />
-      )}
+      {subHeader}
       <ListItemWrapper>
         {items && items.map(item => <ListItem key={item.id} data={item} />)}
       </ListItemWrapper>
@@ -41,5 +56,5 @@ const List = ({ data, loading, error, match, history }) => {
   );
 };
 
-export default withDataFetching(List);
+export default List;
 
