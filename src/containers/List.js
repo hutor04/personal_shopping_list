@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import withDataFetching from '../withDataFetching';
 import SubHeader from '../components/Header/SubHeader';
@@ -17,8 +18,11 @@ const Alert = styled.span`
 `;
 
 const List = ({ data, loading, error, match, history }) => {
-  const items =
-    data && data.filter(item => item.listId === parseInt(match.params.id));
+  let { id } = useParams();
+  let items;
+  if (data.length > 0) {
+    items = data.filter(item => item.listId === parseInt(id));
+  }
 
   return !loading && !error ? (
     <>
@@ -39,4 +43,3 @@ const List = ({ data, loading, error, match, history }) => {
 
 export default withDataFetching(List);
 
-// Some text here

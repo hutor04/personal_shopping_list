@@ -29,11 +29,11 @@ const App = () => (
       <Header />
       <Switch>
         <Route exact path='/'>
-          <Lists dataSource={'https://my-json-server.typicode.com/PacktPublishing/React-Projects/lists'}/>
+          <Lists dataSource={'http://my-json-server.typicode.com/PacktPublishing/React-Projects/lists'}/>
         </Route>
         <Route path='/list/:id/new' component={Form} />
         <Route path='/list/:id'>
-          <List dataSource={'https://my-json-server.typicode.com/pranayfpackt/-React-Projects/items'}/>
+          <List dataSource={'http://my-json-server.typicode.com/pranayfpackt/-React-Projects/items'}/>
         </Route>
       </Switch>
     </AppWrapper>
